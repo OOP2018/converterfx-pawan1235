@@ -29,13 +29,13 @@ public class ConverterController {
 		try {
 			Length f = unitbox1.getValue();
 			Length s = unitbox2.getValue();
-			if(!textfield1.getText().isEmpty()) {
-				value = Double.parseDouble(textfield1.getText());
-				textfield2.setText(String.format("%.4g", (f.getValue() / s.getValue()) * value));
-			}
-			else {
+			if(textfield2.isFocused()) {
 				value = Double.parseDouble(textfield2.getText());
 				textfield1.setText(String.format("%.4g", (s.getValue() / f.getValue()) * value));
+			}
+			else  {
+				value = Double.parseDouble(textfield1.getText());
+				textfield2.setText(String.format("%.4g", (f.getValue() / s.getValue()) * value));
 			}
 
 		} catch (Exception e) {
