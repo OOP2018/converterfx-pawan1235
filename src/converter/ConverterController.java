@@ -18,7 +18,11 @@ public class ConverterController {
 	@FXML
 	private ComboBox<Length> unitbox2;
 
-
+	/**
+	 * Convert unit form unitbox1 to unitbox2.
+	 * @param event
+	 * 				is when user hit enter or press convert
+	 */
 	@FXML
 	public void handleConvert(ActionEvent event) {
 		double value = 0;
@@ -39,7 +43,11 @@ public class ConverterController {
 			textfield2.setText("Invalid value");
 		}
 	}
-
+	/**
+	 * Clear textfield1 and textfield2 
+	 * @param event
+	 * 				is after user press clear button
+	 */
 	public void handleClear(ActionEvent event) {
 		textfield1.clear();
 		textfield2.clear();

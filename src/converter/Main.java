@@ -6,8 +6,16 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * Main for start program
+ * @author Pawan Intawongsa
+ *
+ */
 public class Main extends Application {
 
+	/**
+	 * Start program by create scene  form fxml file
+	 */
 	@Override
 	public void start(Stage stage) {
 		try {
@@ -21,6 +29,7 @@ public class Main extends Application {
 		}
 	}
 
+	
 	public static void main(String[] args) {
 		launch(args);
 	}
