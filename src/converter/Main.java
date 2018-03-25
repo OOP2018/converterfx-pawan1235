@@ -21,11 +21,14 @@ public class Main extends Application {
 		try {
 			Parent root = (Parent) FXMLLoader.load(getClass().getResource("Converter.fxml"));
 			Scene scene = new Scene(root);
+			
 			stage.setScene(scene);
 			stage.sizeToScene();
+			stage.setTitle("Unit Converter");			
 			stage.show();
 		} catch (Exception e) {
 			System.out.println("Exception creating scene: " + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 

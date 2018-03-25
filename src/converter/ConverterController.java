@@ -1,8 +1,13 @@
 package converter;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextField;
 
 /**
@@ -14,43 +19,74 @@ public class ConverterController {
 	@FXML
 	TextField textfield2;
 	@FXML
-	private ComboBox<Length> unitbox1;
+	private ComboBox<Unit> unitbox1;
 	@FXML
-	private ComboBox<Length> unitbox2;
+	private ComboBox<Unit> unitbox2;
+	@FXML
+	private Menu UnitTypeMenu;
 
 	/**
 	 * Convert unit form unitbox1 to unitbox2.
+	 * 
 	 * @param event
-	 * 				is when user hit enter or press convert
+	 *            is when user hit enter or press convert
 	 */
 	@FXML
 	public void handleConvert(ActionEvent event) {
 		double value = 0;
 		try {
-			Length f = unitbox1.getValue();
-			Length s = unitbox2.getValue();
-			if(textfield2.isFocused()) {
+			Unit f = unitbox1.getValue();
+			Unit s = unitbox2.getValue();
+			textfield1.setStyle("-fx-text-fill: black");
+			textfield2.setStyle("-fx-text-fill: black");
+			if (textfield2.isFocused()) {
 				value = Double.parseDouble(textfield2.getText());
-				textfield1.setText(String.format("%.4g", (s.getValue() / f.getValue()) * value));
-			}
-			else  {
+				double newValue = f.convert(value, s);
+				textfield1.setText(String.format("%.4g", newValue));
+			} else {
 				value = Double.parseDouble(textfield1.getText());
-				textfield2.setText(String.format("%.4g", (f.getValue() / s.getValue()) * value));
+				double newValue = s.convert(value, f);
+				textfield2.setText(String.format("%.4g", newValue));
 			}
 
 		} catch (Exception e) {
+			textfield1.setStyle("-fx-text-fill: red");
+			textfield2.setStyle("-fx-text-fill: red");
 			textfield1.setText("Invalid value");
 			textfield2.setText("Invalid value");
 		}
 	}
+
 	/**
-	 * Clear textfield1 and textfield2 
+	 * Clear textfield1 and textfield2
+	 * 
 	 * @param event
-	 * 				is after user press clear button
+	 *            is after user press clear button
 	 */
 	public void handleClear(ActionEvent event) {
 		textfield1.clear();
 		textfield2.clear();
+	}
+
+	/** Event handler for selecting a unittype using a menu item. */
+	public void handleUnitSelected(ActionEvent event) {
+
+		MenuItem mitem = (MenuItem) event.getSource();
+		String unitname = mitem.getText();
+		Unit[] units = UnitFactory.getInstance().getUnits(unitname);
+		unitbox1.getSelectionModel().clearSelection();
+		unitbox1.getItems().clear();
+		unitbox2.getSelectionModel().clearSelection();
+		unitbox2.getItems().clear();
+		
+		if (unitbox1 != null) {
+			unitbox1.getItems().addAll(units);
+			unitbox1.getSelectionModel().select(0); // select an item to show
+		}
+		if (unitbox2 != null) {
+			unitbox2.getItems().addAll(units);
+			unitbox2.getSelectionModel().select(1); // select an item to show
+		}
 	}
 
 	/**
@@ -62,13 +98,27 @@ public class ConverterController {
 	 */
 	@FXML
 	public void initialize() {
-		if (unitbox1 != null) {
-			unitbox1.getItems().addAll(Length.values());
-			unitbox1.getSelectionModel().select(0); // select an item to show
+		UnitType[] unitType = UnitType.values();
+		for (UnitType unit : unitType) {
+			MenuItem unitItem = new MenuItem(unit.toString());
+			unitItem.setOnAction(new EventHandler<ActionEvent>() {
+
+				@Override
+				public void handle(ActionEvent event) {
+					handleUnitSelected(event);
+				}
+			});
+			UnitTypeMenu.getItems().add(unitItem);
 		}
-		if (unitbox2 != null) {
-			unitbox2.getItems().addAll(Length.values());
-			unitbox2.getSelectionModel().select(1); // select an item to show
-		}
+		MenuItem exit = new MenuItem("Exit");
+		exit.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				Platform.exit();
+			}
+		});
+		UnitTypeMenu.getItems().addAll(new SeparatorMenuItem(),exit);
 	}
+
 }
